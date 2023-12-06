@@ -84,14 +84,27 @@ const BaseInput = styled.input`
   background-color: transparent;
   height: 2.5rem;
   border: 0;
-  border-bottom: 2px solid ${(props) => props.theme['green-500']};
+  border-bottom: 2px solid ${(props) => props.theme['gray-500']};
   color: ${(props) => props.theme['gray-100']};
   font-weight: bold;
   font-size: 1.125rem;
   padding: 0 0.5rem;
+
+  &:focus {
+    box-shadow: none;
+    border-color: ${(props) => props.theme['green-500']};
+  }
+
+  &:placeholder {
+    color: ${(props) => props.theme['gray-500']};
+  }
 `
 export const TaskInput = styled(BaseInput)`
   flex: 1;
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1) !important;
+  }
 `
 export const MinutesAmountInput = styled(BaseInput)`
   width: 4rem;
