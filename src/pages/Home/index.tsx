@@ -1,4 +1,5 @@
 import { Play } from 'phosphor-react'
+import { useForm } from 'react-hook-form'
 import {
   ButtonSubmit,
   CountdownContainer,
@@ -8,26 +9,28 @@ import {
   Separator,
   TaskInput,
 } from './style'
-import { useState } from 'react'
 
 export function Home() {
-  const [value, setValue] = useState('')
+  const { register, handleSubmit, watch } = useForm()
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value
-    const newValue = inputValue.slice(0, 2)
-    setValue(newValue)
+  const handleStartCountdown = (data: any) => {
+    console.log(data)
   }
+
+  const task = watch('task')
+  const isSubmitDisabled = !task
+
   return (
     <HomeContainer>
-      <form>
+      <form onSubmit={handleSubmit(handleStartCountdown)}>
         <FormContainer>
-          <label htmlFor="tasnk">Vou trabalhar em</label>
+          <label htmlFor="task">Vou trabalhar em</label>
           <TaskInput
             type="text"
             list="task-suggestions"
             id="task"
             placeholder="Dê um nome para o seu projeto"
+            {...register('task')}
           />
 
           <datalist id="task-suggestions">
@@ -37,16 +40,15 @@ export function Home() {
             <option value="Projeto 4" />
             <option value="Projeto 5" />
           </datalist>
-          <label htmlFor="tasnk">durante</label>
+          <label htmlFor="task">durante</label>
           <MinutesAmountInput
             type="number"
             id="minutesAmmount"
             placeholder="00"
             step={5}
-            value={value}
             min={5}
             max={60}
-            onChange={handleInputChange}
+            {...register('minutesAmmount', { valueAsNumber: true })}
           />
           <span>minutes.</span>
         </FormContainer>
@@ -57,7 +59,8 @@ export function Home() {
           <span>0</span>
           <span>0</span>
         </CountdownContainer>
-        <ButtonSubmit type="submit">
+
+        <ButtonSubmit type="submit" disabled={isSubmitDisabled}>
           <Play /> Começar
         </ButtonSubmit>
       </form>
