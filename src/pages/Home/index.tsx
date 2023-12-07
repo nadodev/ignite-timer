@@ -5,15 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { differenceInSeconds } from 'date-fns'
 import * as zod from 'zod'
 import {
-  CountdownContainer,
-  FormContainer,
   HomeContainer,
-  MinutesAmountInput,
-  Separator,
   StartCountdownButton,
   StopCountdownButton,
-  TaskInput,
 } from './style'
+import { NewCycleForm } from './components/NewCycleForm'
+import { Countdown } from './components/Countdown'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
@@ -43,7 +40,7 @@ export function Home() {
     defaultValues: optionsDefaultValues,
   })
 
-  const { register, handleSubmit, reset, watch } = NewForm
+  const { handleSubmit, reset, watch } = NewForm
 
   const handleStartCountdown = (data: NewCycleFormData) => {
     const id = String(new Date().getTime())
@@ -136,50 +133,16 @@ export function Home() {
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleStartCountdown)} action="#">
-        <FormContainer>
-          <label htmlFor="task">Vou trabalhar em</label>
-          <TaskInput
-            type="text"
-            list="task-suggestions"
-            id="task"
-            placeholder="Dê um nome para o seu projeto"
-            {...register('task')}
-            disabled={!!activeCycle}
-          />
-
-          <datalist id="task-suggestions">
-            <option value="Projeto 1" />
-            <option value="Projeto 2" />
-            <option value="Projeto 3" />
-            <option value="Projeto 4" />
-            <option value="Projeto 5" />
-          </datalist>
-
-          <label htmlFor="task">durante</label>
-          <MinutesAmountInput
-            type="number"
-            id="minutesAmount"
-            placeholder="00"
-            step="5"
-            max="60"
-            disabled={!!activeCycle}
-            {...register('minutesAmount', { valueAsNumber: true })}
-          />
-          <span>minutes.</span>
-        </FormContainer>
-        <CountdownContainer>
-          <span>{minutes}</span>
-          <Separator>:</Separator>
-          <span>{seconds}</span>
-        </CountdownContainer>
+        <NewCycleForm />
+        <Countdown />
 
         {activeCycle ? (
           <StopCountdownButton type="button" onClick={handleInterruptCountdown}>
-            <HandPalm /> Interromper
+            <HandPalm size={24} /> Interromper
           </StopCountdownButton>
         ) : (
           <StartCountdownButton type="submit" disabled={isSubmitDisabled}>
-            <Play /> Começar
+            <Play size={24} /> Começar
           </StartCountdownButton>
         )}
       </form>
