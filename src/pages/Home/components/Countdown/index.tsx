@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { CountdownContainer, Separator } from './style'
 import { differenceInSeconds } from 'date-fns'
-import { ActivityCycleContext } from '../..'
+import { ActivityCycleContext } from '../../../../context/CycleContext'
 
 export function Countdown() {
   const {
@@ -20,6 +20,7 @@ export function Countdown() {
   const minutes = String(minutesAmount).padStart(2, '0')
 
   const seconds = String(secondsAmount).padStart(2, '0')
+
   useEffect(() => {
     let interval: number
     if (activeCycle) {
