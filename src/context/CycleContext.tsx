@@ -1,10 +1,6 @@
 import { createContext, useEffect, useReducer, useState } from 'react'
 import { CyclesReducers } from '../reducers/cycles/reducers'
-import {
-  ActionTypes,
-  addNewCycle,
-  interruptCurrentCycle,
-} from '../reducers/cycles/actions'
+import { addNewCycle, interruptCurrentCycle } from '../reducers/cycles/actions'
 import { differenceInSeconds } from 'date-fns'
 export interface Cycle {
   id: string

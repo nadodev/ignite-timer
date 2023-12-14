@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react'
-import { ActivityCycleContext, Cycle } from '../../context/CycleContext'
+import { useContext } from 'react'
+import { ActivityCycleContext } from '../../context/CycleContext'
 import { HistoryContainer, HistoryList, Status } from './style'
 import { formatDistanceToNow } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
