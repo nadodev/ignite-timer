@@ -1,5 +1,5 @@
-import { Cycle } from '../context/CycleContext'
-import { ActionTypes } from './types'
+import { Cycle } from '../../context/CycleContext'
+import { ActionTypes } from './actions'
 
 interface CycleState {
   cycles: Cycle[]
