@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components'
 import { defaultTheme } from './styles/themes/themeDefault'
 import { GlobalStyle } from './styles/global'
 import { ActivityCycleProvider } from './context/CycleContext'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export function App() {
   return (
@@ -12,6 +13,7 @@ export function App() {
         <GlobalStyle />
         <ActivityCycleProvider>
           <Router />
+          <SpeedInsights/>
         </ActivityCycleProvider>
       </ThemeProvider>
     </BrowserRouter>
