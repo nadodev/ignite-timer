@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react'
+import { differenceInSeconds, parseISO } from 'date-fns'
 import { CountdownContainer, Separator } from './style'
-import { differenceInSeconds } from 'date-fns'
 import { ActivityCycleContext } from '../../../../context/CycleContext'
 
 export function Countdown() {
@@ -12,30 +12,25 @@ export function Countdown() {
     setSecondsPassed,
   } = useContext(ActivityCycleContext)
   const totalSeconds = activeCycle ? activeCycle?.minutesAmount * 60 : 0
-  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
-
-  const minutesAmount = Math.floor(currentSeconds / 60)
-  const secondsAmount = currentSeconds % 60
-
-  const minutes = String(minutesAmount).padStart(2, '0')
-
-  const seconds = String(secondsAmount).padStart(2, '0')
 
   useEffect(() => {
     let interval: number
     if (activeCycle) {
       interval = setInterval(() => {
-        const secondsPassed = differenceInSeconds(
-          new Date(),
-          activeCycle.startDateTime,
+        const startDateTime = parseISO(activeCycle.startDateTime.toISOString()) // Converter string para objeto Date
+
+        const secondsDifference = differenceInSeconds(
+          new Date(), // Data atual
+          startDateTime, // Data de início convertida
         )
 
-        if (secondsPassed >= totalSeconds) {
+        if (secondsDifference >= totalSeconds) {
           markCurrentCycleAsFinished()
+
           setSecondsPassed(totalSeconds)
           clearInterval(interval)
         } else {
-          setSecondsPassed(secondsPassed)
+          setSecondsPassed(secondsDifference)
         }
       }, 1000)
     }
@@ -47,6 +42,15 @@ export function Countdown() {
     markCurrentCycleAsFinished,
     setSecondsPassed,
   ])
+
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
+
+  const minutesAmount = Math.floor(currentSeconds / 60)
+  const secondsAmount = currentSeconds % 60
+
+  const minutes = String(minutesAmount).padStart(2, '0')
+
+  const seconds = String(secondsAmount).padStart(2, '0')
 
   useEffect(() => {
     if (activeCycle) {
