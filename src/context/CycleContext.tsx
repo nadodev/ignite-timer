@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useReducer, useState } from 'react'
 
 interface Cycle {
   id: string
@@ -33,7 +33,43 @@ export function ActivityCycleProvider({
 }: {
   children: React.ReactNode
 }) {
-  const [cycles, setCycles] = useState<Cycle[]>([])
+  const [cycles, dispatch] = useReducer((state: Cycle[], action: any) => {
+    console.log('state', state)
+    console.log('action', action)
+
+    if (action.type === 'ADD_NEW_CYCLE') {
+      return [...state, action.payload.newCycle]
+    }
+
+    if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
+      return state.map((cycle) => {
+        if (cycle.id === action.payload.activeCycleId) {
+          return {
+            ...cycle,
+            interruptionsDateTime: new Date(),
+          }
+        } else {
+          return cycle
+        }
+      })
+    }
+
+    if (action.type === 'MARK_CURRENT_CYCLE_AS_FINISHED') {
+      return state.map((cycle) => {
+        if (cycle.id === action.payload.activeCycleId) {
+          return {
+            ...cycle,
+            finishDateTime: new Date(),
+          }
+        } else {
+          return cycle
+        }
+      })
+    }
+
+    return state
+  }, [])
+
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
@@ -53,40 +89,62 @@ export function ActivityCycleProvider({
       startDateTime: new Date(),
     }
 
-    setCycles((prevstate) => [...prevstate, newCycle])
+    // setCycles((prevstate) => [...prevstate, newCycle])
+    dispatch({
+      type: 'ADD_NEW_CYCLE',
+      payload: {
+        newCycle,
+      },
+    })
+
     setActiveCycleId(id)
     setAmountSecondsPassed(0)
   }
 
   function handleInterruptCountdown() {
     setActiveCycleId(null)
-    setCycles((state) =>
-      state.map((cycle) => {
-        if (cycle.id === activeCycleId) {
-          return {
-            ...cycle,
-            interruptionsDateTime: new Date(),
-          }
-        } else {
-          return cycle
-        }
-      }),
-    )
+
+    dispatch({
+      type: 'INTERRUPT_CURRENT_CYCLE',
+      payload: {
+        activeCycleId,
+      },
+    })
+
+    // setCycles((state) =>
+    //   state.map((cycle) => {
+    //     if (cycle.id === activeCycleId) {
+    //       return {
+    //         ...cycle,
+    //         interruptionsDateTime: new Date(),
+    //       }
+    //     } else {
+    //       return cycle
+    //     }
+    //   }),
+    // )
   }
 
   function markCurrentCycleAsFinished() {
-    setCycles((state) =>
-      state.map((cycle) => {
-        if (cycle.id === activeCycleId) {
-          return {
-            ...cycle,
-            finishDateTime: new Date(),
-          }
-        } else {
-          return cycle
-        }
-      }),
-    )
+    dispatch({
+      type: 'MARK_CURRENT_CYCLE_AS_FINISHED',
+      payload: {
+        activeCycleId,
+      },
+    })
+
+    // setCycles((state) =>
+    //   state.map((cycle) => {
+    //     if (cycle.id === activeCycleId) {
+    //       return {
+    //         ...cycle,
+    //         finishDateTime: new Date(),
+    //       }
+    //     } else {
+    //       return cycle
+    //     }
+    //   }),
+    // )
   }
 
   return (
